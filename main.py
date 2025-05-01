@@ -41,42 +41,48 @@ request = chip.request_lines(consumer="spectra6-buttons", config=line_config)
 
 display = inky.auto()
 
-# Open Image
-image = Image.open(args.file[fileIndex % len(args.file)])
-# Rotate
-transposing = None
-match args.rotation:
-    case 90:
-        transposing = Transpose.ROTATE_90
-    case 180:
-        transposing = Transpose.ROTATE_180
-    case -90:
-        transposing = Transpose.ROTATE_270
-    case 270:
-        transposing = Transpose.ROTATE_270
+def renderImage():
+    # Open Image
+    image = Image.open(args.file[fileIndex % len(args.file)])
+    # Rotate
+    transposing = None
+    match args.rotation:
+        case 90:
+            transposing = Transpose.ROTATE_90
+        case 180:
+            transposing = Transpose.ROTATE_180
+        case -90:
+            transposing = Transpose.ROTATE_270
+        case 270:
+            transposing = Transpose.ROTATE_270
 
-if transposing:
-    image = image.transpose(transposing) 
+    if transposing:
+        image = image.transpose(transposing) 
 
-# Scale to screen size
-resizeMode = ResizeMode.SCALE_TO_FIT
-match args.scale:
-    case "fit":
-        resizeMode = ResizeMode.SCALE_TO_FIT
-    case "fill":
-        resizeMode = ResizeMode.SCALE_TO_FILL
+    # Scale to screen size
+    resizeMode = ResizeMode.SCALE_TO_FIT
+    match args.scale:
+        case "fit":
+            resizeMode = ResizeMode.SCALE_TO_FIT
+        case "fill":
+            resizeMode = ResizeMode.SCALE_TO_FILL
 
-image = image.scale(display.resolution, resizeMode)
+    image = image.scale(display.resolution, resizeMode)
 
-display.set_image(image, saturation = 0.5)
-display.show()
+    display.set_image(image, saturation = 0.5)
+    display.show()
 
 def handle_button(event):
     index = OFFSETS.index(event.line_offset)
     gpio_number = BUTTONS[index]
     label = LABELS[index]
     print(f"Button press detected on GPIO #{gpio_number} label: {label}")
+    global fileIndex
+    fileIndex += 1
+    renderImage()
 
-# while True:
-#     for event in request.read_edge_events():
-#         handle_button(event)
+renderImage()
+print("Waiting for input...")
+while True:
+    for event in request.read_edge_events():
+        handle_button(event)
