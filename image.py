@@ -43,36 +43,29 @@ class Image(object):
         heightScale = targetDimension[1] / self.size[1]
 
         resizedImage = self
+        resizeScale = widthScale
 
         match resizeMode:
             case ResizeMode.SCALE_TO_FILL:
                 print("SCALE TO FILL")
                 if targetAspectRatio <= aspectRatio:
                     # Scale on height
-                    newWidth = math.floor(self.size[0] * heightScale)
-                    newHeight = math.floor(self.size[1] * heightScale)
-                    
-                    resizedImage = Image(self._img.resize((newWidth,newHeight)))
+                    resizeScale = heightScale
                 else:
                     # Scale of width
-                    newWidth = math.floor(self.size[0] * widthScale)
-                    newHeight = math.floor(self.size[1] * widthScale)
-                    
-                    resizedImage = Image(self._img.resize((newWidth,newHeight)))
+                    resizeScale = widthScale
             case ResizeMode.SCALE_TO_FIT:
                 print("SCALE TO FIT")
                 if targetAspectRatio <= aspectRatio:
                     # Scale of width
-                    newWidth = math.floor(self.size[0] * widthScale)
-                    newHeight = math.floor(self.size[1] * widthScale)
-                    
-                    resizedImage = Image(self._img.resize((newWidth,newHeight)))
+                    resizeScale = widthScale
                 else:
                     # Scale on height
-                    newWidth = math.floor(self.size[0] * heightScale)
-                    newHeight = math.floor(self.size[1] * heightScale)
-                    
-                    resizedImage = Image(self._img.resize((newWidth,newHeight)))
+                    resizeScale = heightScale
+        
+        newWidth = math.floor(self.size[0] * resizeScale)
+        newHeight = math.floor(self.size[1] * resizeScale)
+        resizedImage = Image(self._img.resize((newWidth,newHeight)))
         
         print("resized image size: %dx%d" % resizedImage.size)
 
