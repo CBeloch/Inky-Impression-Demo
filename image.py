@@ -37,7 +37,7 @@ class Image(object):
         aspectRatio = self.size[0] / self.size[1]
         targetAspectRatio = targetDimension[0] / targetDimension[1]
 
-        print("scaling from %dx%d to %dx%d - aspect ratio: %f" % (self.size + targetDimension + (aspectRatio,)))
+        # print("scaling from %dx%d to %dx%d - aspect ratio: %f" % (self.size + targetDimension + (aspectRatio,)))
         
         widthScale = targetDimension[0] / self.size[0]
         heightScale = targetDimension[1] / self.size[1]
@@ -47,7 +47,7 @@ class Image(object):
 
         match resizeMode:
             case ResizeMode.SCALE_TO_FILL:
-                print("SCALE TO FILL")
+                # print("SCALE TO FILL")
                 if targetAspectRatio <= aspectRatio:
                     # Scale on height
                     resizeScale = heightScale
@@ -55,7 +55,7 @@ class Image(object):
                     # Scale of width
                     resizeScale = widthScale
             case ResizeMode.SCALE_TO_FIT:
-                print("SCALE TO FIT")
+                # print("SCALE TO FIT")
                 if targetAspectRatio <= aspectRatio:
                     # Scale of width
                     resizeScale = widthScale
@@ -66,8 +66,8 @@ class Image(object):
         newWidth = math.floor(self.size[0] * resizeScale)
         newHeight = math.floor(self.size[1] * resizeScale)
         resizedImage = Image(self._img.resize((newWidth,newHeight)))
-        
-        print("resized image size: %dx%d" % resizedImage.size)
+
+        # print("resized image size: %dx%d" % resizedImage.size)
 
         if match:
             return resizedImage.match(targetDimension)
@@ -86,8 +86,8 @@ class Image(object):
             adjustment = 1 #if diffs[1] > 0 else -1
             bottom = bottom + adjustment
 
-        print("diffs", diffs)
-        print("crops:", (left, right, top, bottom))
+        # print("diffs", diffs)
+        # print("crops:", (left, right, top, bottom))
 
         output = self
 
