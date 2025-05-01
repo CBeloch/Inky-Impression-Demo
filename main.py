@@ -14,11 +14,13 @@ import inky
 
 # Parse Arguments
 parser = argparse.ArgumentParser()
-parser.add_argument("--file", "-f", type=pathlib.Path, help="Image file")
+parser.add_argument("--file", "-f", type=pathlib.Path, help="Image file", nargs="+", required=True)
 parser.add_argument("--rotation", "-r", type=int, help="Screen rotation", default=0)
 parser.add_argument("--scale", "-s", type=str, help="Scale Mode - fill or fit", default="fit")
 
 args, _ = parser.parse_known_args()
+
+fileIndex = 0
 
 # Setup Buttons
 SW_A = 5
@@ -40,7 +42,7 @@ request = chip.request_lines(consumer="spectra6-buttons", config=line_config)
 display = inky.auto()
 
 # Open Image
-image = Image.open(args.file)
+image = Image.open(args.file[fileIndex % len(args.file)])
 # Rotate
 transposing = None
 match args.rotation:
@@ -67,7 +69,7 @@ match args.scale:
 image = image.scale(display.resolution, resizeMode)
 
 display.set_image(image, saturation = 0.5)
-#display.show()
+display.show()
 
 def handle_button(event):
     index = OFFSETS.index(event.line_offset)
@@ -75,6 +77,6 @@ def handle_button(event):
     label = LABELS[index]
     print(f"Button press detected on GPIO #{gpio_number} label: {label}")
 
-while True:
-    for event in request.read_edge_events():
-        handle_button(event)
+# while True:
+#     for event in request.read_edge_events():
+#         handle_button(event)
