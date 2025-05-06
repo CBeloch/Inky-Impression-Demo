@@ -2,6 +2,7 @@
 import argparse
 import pathlib
 import sys
+import os
 
 from image import Image, ResizeMode
 from PIL.Image import Transpose
@@ -9,16 +10,25 @@ from PIL.Image import Transpose
 import gpiod
 import gpiodevice
 from gpiod.line import Bias, Direction, Edge
-
 import inky
 
 # Parse Arguments
 parser = argparse.ArgumentParser()
-parser.add_argument("--file", "-f", type=pathlib.Path, help="Image file", nargs="+", required=True)
+parser.add_argument("--file", "-f", type=pathlib.Path, help="Image file", nargs="+")
+parser.add_argument("--dir", "-d", type=pathlib.Path, help="Directory with image files")
+
 parser.add_argument("--rotation", "-r", type=int, help="Screen rotation", default=0)
 parser.add_argument("--scale", "-s", type=str, help="Scale Mode - fill or fit", default="fit")
 
 args, _ = parser.parse_known_args()
+
+if not args.file and not args.dir:
+    parser.print_help()
+    sys.exit(1)
+
+if args.dir:
+    print("Loading from directory")
+    args.file = list(args.dir.iterdir())
 
 fileIndex = 0
 
