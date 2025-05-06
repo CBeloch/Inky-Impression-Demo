@@ -32,47 +32,15 @@ class Image(object):
         return Image(self._img.transpose(method))
 
     def scale(self, targetDimension: tuple[int], resizeMode: ResizeMode = ResizeMode.SCALE_TO_FILL, match: bool = True):
-        # aspect ratio > 1 = LANDSCAPE
-        # aspect ratio < 1 = PORTRAIT
-        aspectRatio = self.size[0] / self.size[1]
-        targetAspectRatio = targetDimension[0] / targetDimension[1]
-
-        # print("scaling from %dx%d to %dx%d - aspect ratio: %f" % (self.size + targetDimension + (aspectRatio,)))
-        
-        widthScale = targetDimension[0] / self.size[0]
-        heightScale = targetDimension[1] / self.size[1]
-
-        resizedImage = self
-        resizeScale = widthScale
+        image = self
 
         match resizeMode:
             case ResizeMode.SCALE_TO_FILL:
-                # print("SCALE TO FILL")
-                if targetAspectRatio <= aspectRatio:
-                    # Scale on height
-                    resizeScale = heightScale
-                else:
-                    # Scale of width
-                    resizeScale = widthScale
+                image = Image(ImageOps.fit(image._img, targetDimension))
             case ResizeMode.SCALE_TO_FIT:
-                # print("SCALE TO FIT")
-                if targetAspectRatio <= aspectRatio:
-                    # Scale of width
-                    resizeScale = widthScale
-                else:
-                    # Scale on height
-                    resizeScale = heightScale
+                image = Image(ImageOps.pad(image._img, targetDimension, color="#fff"))
         
-        newWidth = math.floor(self.size[0] * resizeScale)
-        newHeight = math.floor(self.size[1] * resizeScale)
-        resizedImage = Image(self._img.resize((newWidth,newHeight)))
-
-        # print("resized image size: %dx%d" % resizedImage.size)
-
-        if match:
-            return resizedImage.match(targetDimension)
-        else:
-            return resizedImage
+        return image
     
     def match(self, targetDimension: tuple[int]):
         diffs = tuple(map(sub, self.size, targetDimension))
