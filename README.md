@@ -2,7 +2,7 @@
 
 This is a little python script to display images on a Pimoroni Inky Impression. It will display all images in the correct aspect ratio and you can choose if you want them to fit or fill the screen. And there is support for rotation if you want to display your images with the display being oriented in portrait or upside down.
 
-Images are displayed one by one. The buttons on the Inky Impression can be used to change the current image. They all do the same at the moment.
+Images are displayed one by one. 
 
 Tested with the *7.3" Inky Impression (2025 Edition)* in combination with a *Raspberry Pi 5*.
 
@@ -30,3 +30,12 @@ python main.py --file myimage.png anotherimage.jpg
 ```shell
 python main.py -d ~/Pictures/Latest_Holiday -r -90 -s fill
 ```
+
+## Buttons
+
+| Button |                                            |
+| ------ | ------------------------------------------ |
+| A      | Next image                                 |
+| B      | Random image                               |
+| C      | Toggle scale mode between `fit` and `fill` |
+| D      | Previous image                             |

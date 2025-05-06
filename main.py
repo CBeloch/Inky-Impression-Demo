@@ -6,6 +6,7 @@ import os
 
 from image import Image, ResizeMode
 from PIL.Image import Transpose
+from random import randrange
 
 import gpiod
 import gpiodevice
@@ -87,8 +88,23 @@ def handle_button(event):
     gpio_number = BUTTONS[index]
     label = LABELS[index]
     print(f"Button press detected on GPIO #{gpio_number} label: {label}")
+
     global fileIndex
-    fileIndex += 1
+    global args
+
+    if gpio_number == SW_A:
+        # next image
+        fileIndex += 1
+    if gpio_number == SW_B:
+        # random image
+        fileIndex = randrange(len(args.file))
+    if gpio_number == SW_C:
+        # toggle scale mode
+        args.scale = "fit" if args.scale == "fill" else "fill"
+    if gpio_number == SW_D:
+        # previious image
+        fileIndex -= 1
+    
     renderImage()
 
 renderImage()
